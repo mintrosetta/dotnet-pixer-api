@@ -13,5 +13,7 @@ namespace PixerAPI.Models
 
         [Column("name")]
         public required string Name { get; set; }
+
+        public ICollection<ProductArgrement>? ProductArgrements { get; set; }
     }
 }

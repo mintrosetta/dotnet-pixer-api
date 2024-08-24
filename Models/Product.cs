@@ -31,5 +31,7 @@ namespace PixerAPI.Models
 
         [ForeignKey("UserId")]
         public User User { get; set; }
+
+        public ICollection<ProductArgrement>? ProductArgrements { get; set; }
     }
 }

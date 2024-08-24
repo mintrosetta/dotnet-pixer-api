@@ -17,12 +17,14 @@ namespace PixerAPI.UnitOfWorks
             this.RoleRepository = new RoleRepository(dbContext);
             this.ProductRepository = new ProductRepository(dbContext);
             this.ArgrementRepository = new ArgrementRepository(dbContext);
+            this.ProductArgrementRepository = new ProductArgrementRepository(dbContext);
         }
 
         public IUserRepository UserRepository { get; private set; }
         public IRoleRepository RoleRepository { get; private set; }
         public IProductRepository ProductRepository { get; private set; }
         public IArgrementRepository ArgrementRepository { get; private set; }
+        public IProductArgrementRepository ProductArgrementRepository { get; private set; }
 
         public async Task CompleteAsync()
         {
