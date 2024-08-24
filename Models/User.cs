@@ -35,4 +35,6 @@ public class User
 
     [ForeignKey("RoleId")]
     public Role Role { get; set; }
+
+    public ICollection<Product>? Products { get; set; }
 }
