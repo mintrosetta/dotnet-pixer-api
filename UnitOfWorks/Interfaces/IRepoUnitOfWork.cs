@@ -9,6 +9,7 @@ namespace PixerAPI.UnitOfWorks.Interfaces
         public IProductRepository ProductRepository { get; }
         public IArgrementRepository ArgrementRepository { get; }
         public IProductArgrementRepository ProductArgrementRepository { get; }
+        public IUserInventoryRepository UserInventoryRepository { get; }
 
         Task CompleteAsync();
     }

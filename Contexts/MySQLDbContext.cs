@@ -15,4 +15,5 @@ public class MySQLDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Argrement> Argrements { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+    public DbSet<UserInventory> UserInventories { get; set; }
 }

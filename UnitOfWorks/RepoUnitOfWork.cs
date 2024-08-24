@@ -19,6 +19,7 @@ namespace PixerAPI.UnitOfWorks
             this.ArgrementRepository = new ArgrementRepository(dbContext);
             this.ProductArgrementRepository = new ProductArgrementRepository(dbContext);
             this.ShoppingCartRepository = new ShoppingCartRepository(dbContext);
+            this.UserInventoryRepository = new UserInventoryRepository(dbContext);
         }
 
         public IUserRepository UserRepository { get; private set; }
@@ -27,6 +28,7 @@ namespace PixerAPI.UnitOfWorks
         public IArgrementRepository ArgrementRepository { get; private set; }
         public IProductArgrementRepository ProductArgrementRepository { get; private set; }
         public IShoppingCartRepository ShoppingCartRepository { get; private set; }
+        public IUserInventoryRepository UserInventoryRepository { get; private set; }
 
         public async Task CompleteAsync()
         {
