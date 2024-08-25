@@ -28,7 +28,7 @@ namespace PixerAPI.Controllers
             try
             {
                 // create instance for result of product
-                List<ProductDto> productDtos = new List<ProductDto>();
+                List<ShortProductDto> shortProductDtos = new List<ShortProductDto>();
 
                 // get all products in database
                 List<Product> products = await this.serviceUnitOfWork.ProductService.GetProductsAsync();
@@ -73,20 +73,115 @@ namespace PixerAPI.Controllers
                     }
 
                     // after processed, add current product to collection result of product
-                    ProductDto productDto = new ProductDto();
-                   // productDto.Image = product.Image;
+                    ShortProductDto productDto = new ShortProductDto();
+                    productDto.Image = product.Image;
                     productDto.Price = Math.Round(product.Price, 2);
                     productDto.Agreements = agreementDtos;
 
-                    productDtos.Add(productDto);
+                    shortProductDtos.Add(productDto);
                 }
 
                 // return to client
-                return Ok(new ResponseDto<List<ProductDto>>()
+                return Ok(new ResponseDto<List<ShortProductDto>>()
                 {
                     IsSuccess = true,
                     Message = "Successful",
-                    Data = productDtos
+                    Data = shortProductDtos
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed",
+                    Data = null
+                });
+            }
+        }
+
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetProductById(int productId)
+        {
+            try
+            {
+                Product? product = await this.serviceUnitOfWork.ProductService.GetProductByIdAsync(productId);
+
+                // validate product
+                if (product == null) return StatusCode(204, new ResponseDto<object>()
+                {
+                    IsSuccess = true,
+                    Message = "No Content",
+                    Data = null
+                });
+
+                // get all master data of agreements
+                List<Agreement> agreements = await this.serviceUnitOfWork.AgreementService.GetAgreementsAsync();
+
+                // get agreement of product by productId
+                List<ProductAgreement> productAgreements = await this.serviceUnitOfWork.AgreementService.GetAgreementByProductIdAsync(product.Id);
+
+                // create instance result agreement of this product
+                List<ProductAgreementDto> agreementDtos = new List<ProductAgreementDto>();
+
+                // loop for process agreement of product
+                foreach (Agreement agreement in agreements)
+                {
+                    bool isAccept = false;
+
+                    // loop for check agreement of product is accept
+                    /*
+                        if agreement of product is in master data of agreement, should be accept
+                        if agreement of product is not in master data of agreement, should be not accept
+                     */
+                    foreach (ProductAgreement productAgreement in productAgreements)
+                    {
+                        if (productAgreement.ArgrementId == agreement.Id)
+                        {
+                            isAccept = true;
+                            break;
+                        }
+                    }
+
+                    // add result of product agreement to collection of agreement result 
+                    agreementDtos.Add(new ProductAgreementDto()
+                    {
+                        Name = agreement.Name,
+                        IsAccept = isAccept
+                    });
+                }
+
+                // get owner of product
+                User? user = await this.serviceUnitOfWork.UserService.FindByIdAsync(product.Id);
+                if (user == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Owner of this product has deleted",
+                    Data = null
+                });
+
+                ProductOwner owner = new ProductOwner()
+                {
+                    ProfileImage = user.ProfileImage,
+                    Username = user.Username
+                };
+
+                // after processed, add current product to collection result of product
+                ProductDto productDto = new ProductDto();
+                productDto.Image = product.Image;
+                productDto.Price = Math.Round(product.Price, 2);
+                productDto.Agreements = agreementDtos;
+                productDto.Description = product.Description;
+                productDto.Owner = owner;
+
+                // return to client
+                return Ok(new ResponseDto<ProductDto>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = productDto
                 });
             }
             catch (Exception ex)

@@ -1,9 +1,8 @@
 ﻿namespace PixerAPI.Dtos.Responses.Products
 {
-    public class ProductDto
+    public class ProductDto : ShortProductDto
     {
-        public byte[] Image { get; set; }
-        public decimal Price { get; set; }
-        public List<ProductAgreementDto> Agreements { get; set; } = new List<ProductAgreementDto>();
+        public string? Description { get; set; }
+        public ProductOwner Owner { get; set; }
     }
 }

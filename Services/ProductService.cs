@@ -31,6 +31,11 @@ namespace PixerAPI.Services
             }
         }
 
+        public async Task<Product?> GetProductByIdAsync(int productId)
+        {
+            return await this.repoUnitOfWork.ProductRepository.FindById(productId); 
+        }
+
         public async Task<List<Product>> GetProductsAsync()
         {
             try
