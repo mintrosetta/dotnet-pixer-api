@@ -31,6 +31,11 @@ namespace PixerAPI.Services
             await this.repoUnitOfWork.CompleteAsync();
         }
 
+        public Task<List<ProductAgreement>> GetAgreementByProductIdAsync(int id)
+        {
+            return this.repoUnitOfWork.ProductArgrementRepository.Find(pa => pa.ProductId == id).ToListAsync();
+        }
+
         public async Task<bool> IsCorrectAgreement(List<int> argrementsCheck)
         {
             List<Agreement> agreements = await this.GetAgreementsAsync();
@@ -66,7 +71,7 @@ namespace PixerAPI.Services
             return (correctCount == argrementsCheck.Count);
         }
 
-        private async Task<List<Agreement>> GetAgreementsAsync()
+        public async Task<List<Agreement>> GetAgreementsAsync()
         {
             return await this.repoUnitOfWork.ArgrementRepository.Find((argrement) => argrement.Name != string.Empty).ToListAsync();
         }

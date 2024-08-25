@@ -30,5 +30,19 @@ namespace PixerAPI.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<Product>> GetProductsAsync()
+        {
+            try
+            {
+                List<Product> products = await this.repoUnitOfWork.ProductRepository.GetAllAsync();
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

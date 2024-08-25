@@ -1,4 +1,5 @@
-﻿using PixerAPI.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using PixerAPI.Contexts;
 using PixerAPI.Models;
 using PixerAPI.Repositories.Interfaces;
 
@@ -8,6 +9,11 @@ namespace PixerAPI.Repositories
     {
         public ProductRepository(MySQLDbContext mySQLDbContext) : base(mySQLDbContext)
         {
+        }
+
+        public async Task<List<Product>> GetAllAsync()
+        {
+            return await this.dbSet.ToListAsync();
         }
     }
 }
