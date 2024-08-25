@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PixerAPI.Models
 {
     [Table("argrements")]
-    public class Argrement
+    public class Agreement
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,6 +14,6 @@ namespace PixerAPI.Models
         [Column("name")]
         public required string Name { get; set; }
 
-        public ICollection<ProductArgrement>? ProductArgrements { get; set; }
+        public ICollection<ProductAgreement>? ProductArgrements { get; set; }
     }
 }

@@ -13,7 +13,7 @@ public class MySQLDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Product> Products { get; set; }
-    public DbSet<Argrement> Argrements { get; set; }
+    public DbSet<Agreement> Argrements { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<UserInventory> UserInventories { get; set; }
 }

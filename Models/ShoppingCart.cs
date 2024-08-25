@@ -9,7 +9,7 @@ namespace PixerAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [Column("user_id")]
         public required int UserId { get; set; }

@@ -9,16 +9,19 @@ namespace PixerAPI.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [Column("user_id")]
         public required int UserId { get; set; }
 
         [Column("image")]
-        public required byte[] image { get; set; }
+        public required byte[] Image { get; set; }
 
         [Column("price")]
         public required decimal Price { get; set; }
+
+        [Column("description")]
+        public required string Description { get; set; }
 
         [Column("is_sold_out")]
         public required bool IsSoldOut { get; set; }
@@ -32,6 +35,6 @@ namespace PixerAPI.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
-        public ICollection<ProductArgrement>? ProductArgrements { get; set; }
+        public ICollection<ProductAgreement>? ProductArgrements { get; set; }
     }
 }

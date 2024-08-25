@@ -7,5 +7,8 @@ namespace PixerAPI.UnitOfWorks.Interfaces
         public IJwtService JwtService { get; }
         public IUserService UserService { get; }
         public IRoleService RoleService { get; }
+        public IFileService FileService { get; }
+        public IProductService ProductService { get; }
+        public IAgrementService AgreementService { get; }
     }
 }

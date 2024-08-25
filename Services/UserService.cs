@@ -39,5 +39,12 @@ namespace PixerAPI.Services
         {
             return await this.repoUnitOfWork.UserRepository.Find((user) => user.Email == email).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> IsLockAsync(int? userId)
+        {
+            if (userId == null) return false;
+
+            return false;
+        }
     }
 }

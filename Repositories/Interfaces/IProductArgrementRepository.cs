@@ -2,7 +2,7 @@
 
 namespace PixerAPI.Repositories.Interfaces
 {
-    public interface IProductArgrementRepository : IRepository<ProductArgrement>
+    public interface IProductArgrementRepository : IRepository<ProductAgreement>
     {
     }
 }

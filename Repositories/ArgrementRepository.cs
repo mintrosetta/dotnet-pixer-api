@@ -4,7 +4,7 @@ using PixerAPI.Repositories.Interfaces;
 
 namespace PixerAPI.Repositories
 {
-    public class ArgrementRepository : Repository<Argrement>, IArgrementRepository
+    public class ArgrementRepository : Repository<Agreement>, IArgrementRepository
     {
         public ArgrementRepository(MySQLDbContext mySQLDbContext) : base(mySQLDbContext)
         {
