@@ -13,6 +13,14 @@ namespace PixerAPI.Services
             this.repoUnitOfWork = repoUnitOfWork;
         }
 
+        public async Task ChangeToSoldOutAsync(Product product)
+        {
+            product.IsSoldOut = true;
+
+            this.repoUnitOfWork.ProductRepository.Update(product);
+            await this.repoUnitOfWork.CompleteAsync();
+        }
+
         public async Task<Product> CreateProductAsync(Product product)
         {
             try

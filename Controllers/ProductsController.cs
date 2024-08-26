@@ -265,5 +265,104 @@ namespace PixerAPI.Controllers
                 });
             }
         }
+
+        [HttpPost("{productId}/buy")]
+        public async Task<IActionResult> BuyProduct(int productId)
+        {
+            try
+            {
+                string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                // buyer should not be locked
+                bool isLock = await this.serviceUnitOfWork.UserService.IsLockAsync(Convert.ToInt32(userId));
+                if (isLock) return Unauthorized(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "User is locked",
+                    Data = false
+                });
+
+                // product should be found
+                Product? product = await this.serviceUnitOfWork.ProductService.GetProductByIdAsync(productId);
+                if (product == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Product not found",
+                    Data = null
+                });
+
+                // User owner of product should not be null
+                User? owner = await this.serviceUnitOfWork.UserService.FindByIdAsync(product.UserId);
+                if (owner == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Owner of product not found",
+                    Data = null
+                });
+
+                // product should not sold out
+                if (product.IsSoldOut) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Product is sold out",
+                    Data = null
+                });
+
+                // buyer should not be owner of product
+                if (product.UserId == Convert.ToInt32(userId)) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Owner of product can't buy own product"
+                });
+
+                // buyer should not be null
+                User? buyer = await this.serviceUnitOfWork.UserService.FindByIdAsync(Convert.ToInt32(userId));
+                if (buyer == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Buyer not found",
+                    Data = null
+                });
+
+                // money of buyer should more than or equal product price
+                if (buyer.Money < product.Price) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Buyer money not enough",
+                    Data = null
+                });
+
+                // deduct buyer money
+                await this.serviceUnitOfWork.UserService.DeductMoneyAsync(buyer, product.Price);
+
+                // add money to owner of product 
+                await this.serviceUnitOfWork.UserService.AddMoneyAsync(owner, product.Price);
+
+                // update to sold out product
+                await this.serviceUnitOfWork.ProductService.ChangeToSoldOutAsync(product);
+
+                // append current product to buyer inventory
+                await this.serviceUnitOfWork.UserService.AppendToInventory(buyer, product);
+
+                // return to client
+                return Ok(new ResponseDto<object>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed",
+                    Data = null
+                });
+            }
+        }
     }
 }

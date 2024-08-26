@@ -46,5 +46,36 @@ namespace PixerAPI.Services
 
             return false;
         }
+
+        public async Task DeductMoneyAsync(User user, decimal price)
+        {
+            user.Money = user.Money - price;
+
+            if (user.Money < 0) throw new Exception("The user money is not sufficient for the deduction");
+
+            this.repoUnitOfWork.UserRepository.Update(user);
+            await this.repoUnitOfWork.CompleteAsync();
+        }
+
+        public async Task AppendToInventory(User user, Product product)
+        {
+            await this.repoUnitOfWork.UserInventoryRepository.Add(new UserInventory()
+            {
+                ProductId = product.Id,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            });
+
+            await this.repoUnitOfWork.CompleteAsync();
+        }
+
+        public async Task AddMoneyAsync(User owner, decimal price)
+        {
+            owner.Money = owner.Money + price;
+
+            this.repoUnitOfWork.UserRepository.Update(owner);
+            await this.repoUnitOfWork.CompleteAsync();
+        }
     }
 }

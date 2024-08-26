@@ -25,7 +25,10 @@ public class User
 
     [Column("profile_image")]
     public byte[]? ProfileImage { get; set; }
-    
+
+    [Column("money")]
+    public decimal Money { get; set; }
+
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 

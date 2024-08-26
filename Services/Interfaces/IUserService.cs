@@ -11,6 +11,8 @@ namespace PixerAPI.Services.Interfaces
         Task<bool> IsLockAsync(int? userId);
 
         Task CreateAsync(User user);
-
+        Task DeductMoneyAsync(User buyer, decimal price);
+        Task AppendToInventory(User buyer, Product product);
+        Task AddMoneyAsync(User owner, decimal price);
     }
 }
