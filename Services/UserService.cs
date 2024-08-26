@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PixerAPI.Dtos.Responses.Users;
 using PixerAPI.Models;
 using PixerAPI.Services.Interfaces;
 using PixerAPI.UnitOfWorks.Interfaces;
@@ -76,6 +77,25 @@ namespace PixerAPI.Services
 
             this.repoUnitOfWork.UserRepository.Update(owner);
             await this.repoUnitOfWork.CompleteAsync();
+        }
+
+        public async Task<List<ShortInventory>> GetShortInventoriesByUserIdAsync(int userId)
+        {
+            DbSet<Product> dbSetProduct = this.repoUnitOfWork.ProductRepository.DbSet;
+            DbSet<UserInventory> dbSetUserInventory = this.repoUnitOfWork.UserInventoryRepository.DbSet;
+
+            // join table UserInventory and Product, Select with ShortInventoryModel
+            return await dbSetUserInventory
+                .Where((userInventory) => userInventory.UserId == userId).Join(
+                dbSetProduct,
+                userInventory => userInventory.ProductId,
+                product => product.Id,
+                (userInventory, product) => new ShortInventory()
+                {
+                    Id = userInventory.Id,
+                    Image = product.Image,
+                })
+                .ToListAsync();
         }
     }
 }

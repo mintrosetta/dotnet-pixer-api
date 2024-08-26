@@ -13,7 +13,7 @@ namespace PixerAPI.Repositories
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await this.dbSet.ToListAsync();
+            return await this.DbSet.ToListAsync();
         }
     }
 }

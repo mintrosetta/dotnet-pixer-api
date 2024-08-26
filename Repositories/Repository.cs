@@ -8,19 +8,20 @@ namespace PixerAPI.Repositories;
 public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly MySQLDbContext dbContext;
-    protected DbSet<T> dbSet;
+
+    public DbSet<T> DbSet { get; private set; }
 
     public Repository(MySQLDbContext mySQLDbContext)
     {
         this.dbContext = mySQLDbContext;
-        this.dbSet = mySQLDbContext.Set<T>();
+        this.DbSet = mySQLDbContext.Set<T>();
     }
 
     public IQueryable<T> Find(Expression<Func<T, bool>> expression)
     {
         try 
         {
-            return this.dbSet.Where(expression);
+            return this.DbSet.Where(expression);
         }
         catch (Exception ex)
         {
@@ -32,7 +33,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            return await this.dbSet.FindAsync(id);
+            return await this.DbSet.FindAsync(id);
         }
         catch (Exception ex)
         {
@@ -44,7 +45,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            await this.dbSet.AddAsync(entity);
+            await this.DbSet.AddAsync(entity);
         }
         catch (Exception ex)
         {
@@ -56,7 +57,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            await this.dbSet.AddRangeAsync(entities);
+            await this.DbSet.AddRangeAsync(entities);
         }
         catch (Exception ex)
         {
@@ -68,7 +69,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            this.dbSet.Update(entity);
+            this.DbSet.Update(entity);
         }
         catch (Exception ex)
         {
@@ -80,7 +81,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            this.dbSet.Remove(entity);
+            this.DbSet.Remove(entity);
         }
         catch (Exception ex)
         {
@@ -92,7 +93,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         try 
         {
-            this.dbSet.RemoveRange(entities);
+            this.DbSet.RemoveRange(entities);
         }
         catch (Exception ex)
         {
