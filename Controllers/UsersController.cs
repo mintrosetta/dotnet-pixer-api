@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PixerAPI.Dtos.Commons;
+using PixerAPI.Dtos.Responses.Products;
 using PixerAPI.Dtos.Responses.Users;
 using PixerAPI.Models;
 using PixerAPI.UnitOfWorks.Interfaces;
@@ -117,6 +118,42 @@ namespace PixerAPI.Controllers
                     IsSuccess = true,
                     Message = "Successful",
                     Data = profile
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed",
+                    Data = null
+                });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{username}/products/sales")]
+        public async Task<IActionResult> GetUserProductSales(string username)
+        {
+            try
+            {
+                User? user = await this.serviceUnitOfWork.UserService.FindByUsernameAsync(username);
+                if (user == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Profile not found",
+                    Data = null
+                });
+
+                List<ProfileProductDto> profileProductDtos = await this.serviceUnitOfWork.ProductService.GetShortProductByUserIdAsync(user.Id);
+
+                return Ok(new ResponseDto<List<ProfileProductDto>>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = profileProductDtos
                 });
             }
             catch (Exception ex)

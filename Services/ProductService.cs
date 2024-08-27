@@ -1,4 +1,7 @@
-﻿using PixerAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PixerAPI.Dtos.Responses.Products;
+using PixerAPI.Dtos.Responses.Users;
+using PixerAPI.Models;
 using PixerAPI.Services.Interfaces;
 using PixerAPI.UnitOfWorks.Interfaces;
 
@@ -41,7 +44,7 @@ namespace PixerAPI.Services
 
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
-            return await this.repoUnitOfWork.ProductRepository.FindById(productId); 
+            return await this.repoUnitOfWork.ProductRepository.FindById(productId);
         }
 
         public async Task<List<Product>> GetProductsAsync()
@@ -56,6 +59,18 @@ namespace PixerAPI.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<List<ProfileProductDto>> GetShortProductByUserIdAsync(int id)
+        {
+            return await this.repoUnitOfWork.ProductRepository.Find((product) => product.UserId == id)
+                .OrderByDescending((product) => product.CreatedAt)
+                .Select((product) => new ProfileProductDto()
+                {
+                    Id = product.Id,
+                    Image = product.Image
+                })
+                .ToListAsync();
         }
     }
 }

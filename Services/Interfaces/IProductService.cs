@@ -1,4 +1,5 @@
-﻿using PixerAPI.Models;
+﻿using PixerAPI.Dtos.Responses.Users;
+using PixerAPI.Models;
 
 namespace PixerAPI.Services.Interfaces
 {
@@ -8,5 +9,6 @@ namespace PixerAPI.Services.Interfaces
         Task<Product> CreateProductAsync(Product product);
         Task<Product?> GetProductByIdAsync(int productId);
         Task<List<Product>> GetProductsAsync();
+        Task<List<ProfileProductDto>> GetShortProductByUserIdAsync(int id);
     }
 }
