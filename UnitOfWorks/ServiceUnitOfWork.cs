@@ -15,7 +15,7 @@ namespace PixerAPI.UnitOfWorks
             this.ProductService = new ProductService(repoUnitOfWork);
             this.InventoryService = new InventoryService(repoUnitOfWork);
 
-            this.EmailService = new EmailServices();
+            this.EmailService = new EmailServices(configuration);
             this.FileService = new FileService();
         }
 
