@@ -15,6 +15,6 @@ namespace PixerAPI.Services.Interfaces
         Task DeductMoneyAsync(User buyer, decimal price);
         Task AppendToInventory(User buyer, Product product);
         Task AddMoneyAsync(User owner, decimal price);
-        Task<List<ShortInventory>> GetShortInventoriesByUserIdAsync(int v);
+        Task<List<ShortInventoryDto>> GetShortInventoriesByUserIdAsync(int v);
     }
 }

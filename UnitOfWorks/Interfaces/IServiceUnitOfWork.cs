@@ -10,5 +10,6 @@ namespace PixerAPI.UnitOfWorks.Interfaces
         public IFileService FileService { get; }
         public IProductService ProductService { get; }
         public IAgrementService AgreementService { get; }
+        public IInventoryService InventoryService { get; }
     }
 }

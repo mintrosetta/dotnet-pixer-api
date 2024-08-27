@@ -79,7 +79,7 @@ namespace PixerAPI.Services
             await this.repoUnitOfWork.CompleteAsync();
         }
 
-        public async Task<List<ShortInventory>> GetShortInventoriesByUserIdAsync(int userId)
+        public async Task<List<ShortInventoryDto>> GetShortInventoriesByUserIdAsync(int userId)
         {
             DbSet<Product> dbSetProduct = this.repoUnitOfWork.ProductRepository.DbSet;
             DbSet<UserInventory> dbSetUserInventory = this.repoUnitOfWork.UserInventoryRepository.DbSet;
@@ -90,7 +90,7 @@ namespace PixerAPI.Services
                 dbSetProduct,
                 userInventory => userInventory.ProductId,
                 product => product.Id,
-                (userInventory, product) => new ShortInventory()
+                (userInventory, product) => new ShortInventoryDto()
                 {
                     Id = userInventory.Id,
                     Image = product.Image,
