@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PixerAPI.Dtos.Commons;
+using PixerAPI.Dtos.Requests.Users;
 using PixerAPI.Dtos.Responses.Products;
 using PixerAPI.Dtos.Responses.Users;
 using PixerAPI.Models;
@@ -161,6 +162,85 @@ namespace PixerAPI.Controllers
                 Console.WriteLine(ex.Message);
 
                 return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed",
+                    Data = null
+                });
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDto dto)
+        {
+            try
+            {
+                string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                bool userIdLock = await this.serviceUnitOfWork.UserService.IsLockAsync(Convert.ToInt32(userId));
+                if (userIdLock) return Unauthorized(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "User is locked",
+                    Data = null
+                });
+
+                User? user = await this.serviceUnitOfWork.UserService.FindByIdAsync(Convert.ToInt32(userId));
+                if (user == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    Data = null
+                });
+
+                // update user profile
+                if (dto.ProfileImage != null && dto.ProfileImage.Length > 0)
+                {
+                    // file type should be JPEG, PNG, GIF
+                    bool isImageFile = this.serviceUnitOfWork.FileService.IsImageFile(dto.ProfileImage);
+                    if (!isImageFile) return BadRequest(new ResponseDto<object>()
+                    {
+                        IsSuccess = false,
+                        Message = "File should be image type",
+                        Data = null
+                    });
+
+                    user.ProfileImage = await this.serviceUnitOfWork.FileService.ToBytesAsync(dto.ProfileImage);
+                }
+
+                // update username
+                if (dto.Username != null && dto.Username.Trim().Length > 0 && dto.Username != user.Username)
+                {
+                    bool isExistUsername = await this.serviceUnitOfWork.UserService.IsExistUsername(dto.Username);
+                    if (isExistUsername) return BadRequest(new ResponseDto<object>()
+                    {
+                        IsSuccess = false,
+                        Message = "Username is aleady to use",
+                        Data = null
+                    });
+
+                    user.Username = dto.Username;
+                }
+
+                // update description
+                if (dto.Description != null && dto.Description != user.Description)
+                {
+                    dto.Description = user.Description;
+                }
+
+                await this.serviceUnitOfWork.UserService.UpdateAsync(user);
+
+                return Ok(new ResponseDto<object>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = dto
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return this.StatusCode(500, new ResponseDto<object>()
                 {
                     IsSuccess = false,
                     Message = "Failed",
