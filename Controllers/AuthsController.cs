@@ -129,6 +129,63 @@ namespace PixerAPI.Controllers
         }
 
         [Authorize]
+        [HttpPatch("password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            try
+            {
+                string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (await this.serviceUnitOfWork.UserService.IsLockAsync(Convert.ToInt32(userId))) return Unauthorized(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "User is locked",
+                    Data = false
+                });
+
+                User? user = await this.serviceUnitOfWork.UserService.FindByIdAsync(Convert.ToInt32(userId));
+                if (user == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    Data = null
+                });
+
+                bool isPasswordMatch = BCrypt.Net.BCrypt.Verify(dto.Password, user.Password);
+                if (!isPasswordMatch) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Password is invalid",
+                    Data = null
+                });
+
+                // hash password 
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+                user.Password = passwordHash;
+
+                await this.serviceUnitOfWork.UserService.UpdateAsync(user);
+
+                return Ok(new ResponseDto<object>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Successful",
+                    Data = null
+                });
+            }
+        }
+
+        [Authorize]
         [HttpGet("healthcheck")]
         public IActionResult GetHealthCheck()
         {
