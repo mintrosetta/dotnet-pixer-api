@@ -91,5 +91,45 @@ namespace PixerAPI.Controllers
                 });
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("{username}/profile")]
+        public async Task<IActionResult> GetProfileByUsername(string username)
+        {
+            try
+            {
+                User? user = await this.serviceUnitOfWork.UserService.FindByUsernameAsync(username);
+
+                if (user == null) return BadRequest(new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Profile not found",
+                    Data = null
+                });
+
+                UserProfileDto profile = new UserProfileDto();
+                profile.ProfileImage = user.ProfileImage;
+                profile.Username = user.Username;
+                profile.Description = user.Description;
+
+                return Ok(new ResponseDto<UserProfileDto>()
+                {
+                    IsSuccess = true,
+                    Message = "Successful",
+                    Data = profile
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return StatusCode(500, new ResponseDto<object>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed",
+                    Data = null
+                });
+            }
+        }
     }
 }

@@ -29,6 +29,9 @@ public class User
     [Column("money")]
     public decimal Money { get; set; }
 
+    [Column("description")]
+    public string? Description { get; set; }
+
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 

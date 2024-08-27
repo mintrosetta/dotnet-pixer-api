@@ -97,5 +97,10 @@ namespace PixerAPI.Services
                 })
                 .ToListAsync();
         }
+
+        public async Task<User?> FindByUsernameAsync(string username)
+        {
+            return await this.repoUnitOfWork.UserRepository.Find((user) => user.Username == username).FirstOrDefaultAsync();
+        }
     }
 }

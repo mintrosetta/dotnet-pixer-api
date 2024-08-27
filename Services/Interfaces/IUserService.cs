@@ -7,6 +7,8 @@ namespace PixerAPI.Services.Interfaces
     {
         Task<User?> FindByIdAsync(int id);
         Task<User?> FindByEmailAsync(string email);
+        Task<User?> FindByUsernameAsync(string username);
+
         Task<bool> IsExistEmail(string email);
         Task<bool> IsExistUsername(string username);
         Task<bool> IsLockAsync(int? userId);
